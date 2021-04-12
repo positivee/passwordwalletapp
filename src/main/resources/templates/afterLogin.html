@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css">
+
+</head>
+<body>
+<div class="container text-center">
+    <h1>Hello [[${user.login}]]</h1>
+</div>
+
+<div class="text-center">
+    <h6 class="text-secondary">Last successful login: [[${#temporals.format(userAttempt.successfulLoginTime, 'yyyy-MM-dd HH:mm:ss')}]]</h6>
+      <h6 class="text-secondary">Last failed login: [[${#temporals.format(userAttempt.failedLoginTime, 'yyyy-MM-dd HH:mm:ss')}]]</h6>
+
+<a class="btn btn-light m-2" th:href="@{'/login/' + ${user.id} + '/addPassword'}">Add new password</a><br/>
+<a class="btn btn-light m-2" th:href="@{'/login/' + ${user.id} + '/changePassword'}">Change password</a><br/>
+    <a class="btn btn-light m-2" th:href="@{'/login/' + ${user.id} + '/actions'}">History of your actions on page</a><br/>
+    <a class="btn btn-light m-2" th:href="@{'/'}">Logout</a><br/>
+<div class="container mt-3 mb-1">
+    <div class="alert alert-danger invisible" role="alert" id="alert">
+    </div>
+</div>
+    <table class="table mt-3">
+        <thead>
+        <tr>
+           <!-- <th scope="col">#</th>-->
+            <th scope="col">Login</th>
+            <th scope="col">Password</th>
+            <th  scope="col">Web address</th>
+            <th  scope="col">Description</th>
+            <th  scope="col">ACTION
+                <a th:if="${mode} == 'read'" th:href="@{'/login/' + ${user.id} + '/change-mode'}">MODIFY</a>
+                <a th:if="${mode} == 'modify'" th:href="@{'/login/' + ${user.id} + '/change-mode'}">NON-MODFIFY</a>
+
+
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="password : ${passwords}">
+            <td th:text="${password.login}"></td>
+            <td th:text="${password.passwordWeb}"></td>
+            <td th:text="${password.webAddress}"></td>
+            <td th:text="${password.description}"></td>
+            <td>
+                <a class="btn btn-dark" th:href="@{'/login/' + ${user.id} + '/' + ${password.id}}">Show</a>
+                <!-- Share button-->
+                <a class="btn btn-info" th:if="${ password.users.login != user.login}" href="#" onclick="alertShare()" >Share</a>
+                <a class="btn btn-info" th:if="${ password.users.login == user.login}" th:href="@{'/login/' + ${user.id} + '/' + ${password.id} +'/share-password'}">Share</a>
+
+            <!-- Delete button-->
+                <a  class="btn btn-danger" th:if="${mode == 'read'}"   href="#" onclick="alertMode()" >Delete</a>
+                <a  class="btn btn-danger"th:if="${mode == 'modify' and password.users.login != user.login}" href="#" onclick="alertDelete()" >Delete</a>
+                <a  class="btn btn-danger" th:if="${mode == 'modify' and password.users.login == user.login}" th:href="@{'/login/' + ${user.id} + '/' + ${password.id} +'/delete'}">Delete</a>
+
+                <!--  Edit button-->
+                <a class="btn btn-success" th:if="${mode == 'read'}"   href="#" onclick="alertMode()" >Edit</a>
+                <a class="btn btn-success" th:if="${mode == 'modify' and password.users.login != user.login}" href="#" onclick="alertEdit()" >Edit</a>
+                <a  class="btn btn-success" th:if="${mode == 'modify' and password.users.login == user.login}" th:href="@{'/login/' + ${user.id} + '/' + ${password.id} +'/edit'}">Edit</a>
+
+                <!-- History button-->
+                <a  class="btn btn-dark" th:if="${mode == 'read'}" href="#" onclick="alertMode()" >History</a>
+                <a class="btn btn-dark" th:if="${mode == 'modify' and password.users.login != user.login}" href="#" onclick="alertHistory()" >History of changes</a>
+                <a class="btn btn-dark" th:if="${mode == 'modify' and password.users.login == user.login}"
+                   th:href="@{'/login/' + ${user.id} + '/' + ${password.id} +'/history'}">History</a>
+
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+<script>
+
+    function alertMode() {
+
+        document.getElementById("alert").classList.remove("invisible");
+        document.getElementById("alert").innerHTML = "You have to switch to the modify mode!";
+
+    }
+    function alertHistory() {
+
+        document.getElementById("alert").classList.remove("invisible");
+        document.getElementById("alert").innerHTML = "You have to be an owner to share it!";
+    }
+    function alertShare() {
+
+        document.getElementById("alert").classList.remove("invisible");
+        document.getElementById("alert").innerHTML = "You have to be an owner to share it!";
+    }
+    function alertDelete() {
+
+        document.getElementById("alert").classList.remove("invisible");
+        document.getElementById("alert").innerHTML = "You have to be an owner to delete it!";
+    }
+    function alertEdit() {
+        document.getElementById("alert").classList.remove("invisible");
+        document.getElementById("alert").innerHTML = "You have to be an owner to edit it!";
+    }
+</script>
+</body>
+</html>

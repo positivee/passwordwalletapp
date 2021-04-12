@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>USER ACTIONS HISTORY</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css">
+
+</head>
+<body>
+<div class="text-center">
+
+
+    <a class="btn btn-light m-2" th:href="@{'/login/' + ${user.id}}">Go back to main page</a><br/>
+</div>
+<table class="table mt-3">
+    <thead>
+    <tr>
+
+        <th scope="col">Name of the Function</th>
+        <th scope="col">Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="action : ${actions}">
+        <td th:text="${action.functionName}"></td>
+        <td th:text="${#temporals.format(action.time, 'yyyy-MM-dd HH:mm:ss')}"></td>
+    </tr>
+
+    </tbody>
+</table>
+</body>
+</html>
